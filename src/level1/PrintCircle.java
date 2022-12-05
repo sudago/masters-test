@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class PrintCircle {
     public static void main(String[] args) {
         System.out.println("1부터 80 사이의 정수를 입력해주세요.");
-        System.out.println("(2 이하의 수는 제대로 된 원이 만들어지지 않습니다.)");
+        System.out.println("원의 크기는?");
 
         Scanner scanner = new Scanner(System.in);
         int circle = scanner.nextInt();
