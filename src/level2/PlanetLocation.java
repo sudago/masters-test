@@ -3,7 +3,6 @@ package level2;
 import level1.MakeCircle;
 
 import java.util.Scanner;
-
 public class PlanetLocation {
     /*
     1. 프로그램을 실행하면 1월 1일부터 12월 31일까지 날짜를 입력받는다.
@@ -11,6 +10,35 @@ public class PlanetLocation {
     3. 단 1월 1일에 태양 - 지구 - 달은 순서대로 일직선상에 위치한다고 가정한다.
     4. 문제의 단순화를 위해 태양 지구 달은 같은 평면상에서 공전하며, 공전궤도는 완전한 원이라고 가정한다.
      */
+
+    public static void fillSun(String[][] planet, String[][] sun, int month){
+        /*
+        1월 (1월과의 거리 == 0), 2월과 12월 (1월과의 거리 == 1), 3월과 11월 (1월과의 거리 == 2), 4월과 10월 (1월과의 거리 == 3),
+        5월과 9월 (1월과의 거리 == 4), 6월과 8월 (1월과의 거리 == 5), 7월 (1월과의 거리 == 6)
+         */
+        int[] distanceOfMonth = {8,9,10,11,12,1,2,3,4,5,6,7};
+        int calculateDistanceOfJan = 5 - findIndex(distanceOfMonth, month);
+
+        if (calculateDistanceOfJan < 0) { // 절대값 구하기
+            calculateDistanceOfJan *= -1;
+        }
+        int monthlyLocation = 20 * calculateDistanceOfJan;
+        for(int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                planet[i][j+monthlyLocation] = sun[i][j];
+            }
+        }
+    } // fillSun - end
+
+    public static int findIndex(int[] array, int month){
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == month) {
+                return i; // index 반환
+            }
+        }
+        return 0; // month를 찾지 못했을 경우.
+    } // findIndex - end
+
     public static void main(String[] args) { // ✅위치가 중요!! 객체+배열 사용, 전역변수 사용x
         System.out.println("Sun, Earth, Moon");
         System.out.println("날짜를 입력하세요.");
@@ -51,49 +79,7 @@ public class PlanetLocation {
         // day/8이 1, 3일 경우에는 지구와 겹침.
 
         // 태양 넣기 (위치의 경우의 수는 12가지 -> 12달에 따라 서서히 위치가 변화하게 하고 싶었음.)
-        if (month == 1) { // column의 위치만 서서히 바뀐다.
-            for(int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    planet[i][j] = sun[i][j];
-                }
-            }
-        } else if (month == 2 || month == 12) {
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    planet[i][20+j] = sun[i][j];
-                }
-            }
-        } else if (month == 3 || month == 11) {
-            for(int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    planet[i][40+j] = sun[i][j];
-                }
-            }
-        } else if (month == 4 || month == 10) { // 중앙 == 지구와 겹침.
-            for(int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    planet[i][60+j] = sun[i][j];
-                }
-            }
-        } else if (month == 5 || month == 9) {
-            for(int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    planet[i][80+j] = sun[i][j];
-                }
-            }
-        } else if (month == 6 || month == 8) {
-            for(int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    planet[i][100+j] = sun[i][j];
-                }
-            }
-        }else if (month == 7) {
-            for(int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    planet[i][120+j] = sun[i][j];
-                }
-            }
-        }
+        fillSun(planet, sun, month); // column 위치 파악
 
 
         for(String[] row : planet) {
@@ -106,5 +92,5 @@ public class PlanetLocation {
             }
             System.out.println("");
         }
-    }
+    } //main - end
 }
