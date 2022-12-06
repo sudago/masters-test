@@ -18,7 +18,7 @@ public class MakeCircle {
         }
         return circleArray;
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) { // 4번 수정함.
         System.out.println("1부터 80 사이의 정수를 입력해주세요.");
         System.out.println("원의 크기는?");
 
