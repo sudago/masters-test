@@ -39,6 +39,20 @@ public class PlanetLocation {
         return 0; // month를 찾지 못했을 경우.
     } // findIndex - end
 
+    // 랜덤으로 작은 별찍기
+    static void randomStars(String[][] planet, int starNumber, String star){
+        int starCount = starNumber;
+        while (starCount > 0) {
+            int randomRow = (int)(Math.random()*5);
+            int randomColumn = (int)(Math.random()*25*5);
+
+            if (planet[randomRow][randomColumn] == null) {
+                planet[randomRow][randomColumn] = star;
+                starCount--;
+            }
+        } // while - end
+    } // randomStars - end
+
     public static void main(String[] args) { // ✅위치가 중요!! 객체+배열 사용, 전역변수 사용x
         System.out.println("Sun, Earth, Moon");
         System.out.println("날짜를 입력하세요.");
@@ -58,8 +72,8 @@ public class PlanetLocation {
             day = Integer.parseInt(scanner.next().split("일")[0]);
         }
 
-        String[][] sun = MakeCircle.makeCircleArray(5); // MakeCircle 클래스에서 static 메서드 사용.
-        String[][] earth = MakeCircle.makeCircleArray(3);
+        String[][] sun = MakeCircle.makeFilledCircleArray(5); // MakeCircle 클래스에서 static 메서드 사용.
+        String[][] earth = MakeCircle.makeFilledCircleArray(3);
         String moon = "*";
 
         String[][] planet = new String[5][25*5]; // 초기에 정한 넓이의 *5를 해줬다.
@@ -81,13 +95,17 @@ public class PlanetLocation {
         // 태양 넣기 (위치의 경우의 수는 12가지 -> 12달에 따라 서서히 위치가 변화하게 하고 싶었음.)
         fillSun(planet, sun, month); // column 위치 파악
 
+        // 멋지게 구현하기 (작은 별을 원하는 숫자 만큼 랜덤으로 찍기)
+        randomStars(planet, 15, ".");
+        randomStars(planet, 7, "+");
+
 
         for(String[] row : planet) {
             for (String column : row) {
                 if (column == null) {
-                    System.out.print("-");
+                    System.out.print(" ");
                 } else {
-                    System.out.print("*");
+                    System.out.print(column);
                 }
             }
             System.out.println("");

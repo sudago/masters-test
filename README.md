@@ -23,65 +23,83 @@ ___
 #### 1-2) 구현 : 2차원 배열에 원을 만들 문자를 저장한다.
 - array[row][column] 으로 2차원 배열을 만들었다. <br>
   - row,column,circle(원의 지름)은 같은 숫자이다.
-- 원의 절반 지점을 기준으로 "\*" 문자를 넣는다.
+- 원의 절반 지점을 기준으로 "-" 문자를 넣는다.
 - 원의 맨 윗쪽(오른쪽, 왼쪽), 맨 아랫쪽(오른쪽, 왼쪽)
   - 계산해서 넣는 위치가 같기 때문에 동시에 값을 넣어줬다.
   - 절반 지점 이상부터는 이미 값을 넣어줬기 때문에 for문을 절반 지점까지만 돌아준다.
-  - 2중 for문으로(왼쪽~오른쪽) 1/4면적만 돌며 __빈 원 -> 채워진 원__ 이 되도록 코드를 수정해줬다.(윗쪽, 아랫쪽 코드만 적음.)
+  - 2중 for문으로(왼쪽~오른쪽) 1/4면적만 돌며 __채워진 원__ 이 되는 코드를 static 메서드에 추가했다. (채워진 원, 빈 원 선택 가능)
 - 짝수 일 때는 column이 <u>절반 + 1</u>을 해야 위치가 맞기 때문에 evenNumber에 짝수일 경우에는 1, 홀수면 0을 넣어줬다.
 #### 1-3) 출력 : 터미널 화면에 해당 크기의 원을 출력한다.
 - 향상된 for문으로 2차원 배열의 모든 요소를 돌면서 출력을 해줬다.
   - 요소에 값이 들어있지 않으면 " " 공백 값 출력,
-  - 요소에 값이 들어있으면 ("\*"밖에 들어있지 않으므로) "\*"를 출력해줬다. <br>
+    - 요소에 값이 들어있으면 ("-"밖에 들어있지 않으므로) 출력해줬다. <br>
   - **노력한 점** : 
     1. 함축적으로 예쁜 코드를 만들기 위해 노력했다.
     2. 사용한 기능을 다른 클래스에서도 사용하기 위해서 static 메서드로 빼줬다.
   - **아쉬운 점** : 
     1. 정수 2 이하는 예쁜 원이 만들어지지 않는다..
-    2. 직관성을 위해서 if else 문 안에 둘 다 System.out.println()으로 적었지만, 배열 안에 "\*" 값을 넣고도 
-    System.out.println("\*")로 명시 해 줄 거라면 배열에 "\*" 말고 다른 요소를 넣어도 되지 않았을까 싶다.
 #### 1-4) 코드 설명 : 코드 안에 주석을 달아두었다.
 ````java
 import java.util.Scanner;
 
-public class PrintCircle {
-    public static void main(String[] args) {
-        System.out.println("1부터 80 사이의 정수를 입력해주세요.");
-        System.out.println("원의 크기는?");
+public class MakeCircle { // 클래스 이름 수정
+  public static String[][] makeFilledCircleArray(int circle) { // 원을 만드는 기능을 따로 빼준 메서드
+    String[][] circleArray = new String[circle][circle];
+    int halfCircle = (circle - 1) / 2; // index값 계산을 위해서 -1을 해줌.
+    int evenNumber = circle % 2 == 0 ? 1 : 0; //짝수면 1,홀수면 0을 저장.
 
-        Scanner scanner = new Scanner(System.in);
-        int circle = scanner.nextInt();//정수를 입력받는다.
+    for (int i = 0; i <= halfCircle; i++) { // 2차원 배열 채우기.
+      int reverseRow = circle - 1 - i;
 
-        while (!(circle > 0 && circle <= 80)) {// 1~80정수 외에 다른걸 입력 받으면
-            System.out.println("유효하지 않은 숫자입니다. 다시 입력해주세요.");//에러 메세지 출력
-            circle = scanner.nextInt(); // 유효한 숫자를 입력 받을 때 까지 반복한다.
+      for (int j = (halfCircle - i); j <= (halfCircle + i + evenNumber); j++) { // 왼쪽 ~ 오른쪽 채우기
+        circleArray[i][j] = "*"; // 앞쪽
+        circleArray[reverseRow][j] = "*"; //뒷쪽
+      }
+    }
+    return circleArray;
+  }
+  // 빈 원 만들기
+  public static String[][] makeEmptyCircleArray(int circle) {
+    String[][] circleArray = new String[circle][circle];
+    int halfCircle = (circle - 1) / 2;
+    int evenNumber = circle % 2 == 0 ? 1 : 0;
+
+    for (int i = 0; i <= halfCircle; i++) { // 2차원 배열 채우기
+      int reverseRow = circle - 1 - i;
+
+      circleArray[i][halfCircle - i] = "-";//앞 왼
+      circleArray[i][halfCircle + i + evenNumber] = "-";//앞 오
+      circleArray[reverseRow][halfCircle - i] = "-";//뒤 왼
+      circleArray[reverseRow][halfCircle + i + evenNumber] = "-";//뒤 오
+    }
+    return circleArray;
+  }
+  public static void main(String[] args) {
+    System.out.println("1부터 80 사이의 정수를 입력해주세요.");
+    System.out.println("원의 크기는?");
+
+    Scanner scanner = new Scanner(System.in);
+    int circle = scanner.nextInt();//정수를 입력받는다.
+
+    while (!(circle > 0 && circle <= 80)) {// 1~80정수 외에 다른걸 입력 받으면
+      System.out.println("유효하지 않은 숫자입니다. 다시 입력해주세요.");//에러 메세지 출력
+      circle = scanner.nextInt(); // 유효한 숫자를 입력 받을 때 까지 반복한다.
+    }
+
+    // 빈 원을 만들기
+    String[][] circleArray = makeEmptyCircleArray(circle); // MakeCircle 클래스의 static 메서드 사용.
+
+    for (String[] row: circleArray) { //출력
+      for (String column : row) {
+        if (column == null) { // 아무것도 채워져 있지 않으면
+          System.out.print(" "); // 공백 출력
+        } else { // 무언가로 채워져 있으면 ("-")
+          System.out.print(column); // "-" 출력
         }
-
-        String[][] circleArray = new String[circle][circle];
-        int halfCircle = (circle - 1) / 2;// index값 계산을 위해서 -1을 해줌.
-        int evenNumber = circle % 2 == 0 ? 1 : 0;//짝수면 1,홀수면 0을 저장.
-
-        // "-"문자 넣어주기.
-        for (int i = 0; i <= halfCircle; i++) {//데칼코마니로 앞,뒤가 동시에 채워지게 함.
-            int reverseRow = circle - 1 - i;
-
-            for (int j = (halfCircle - i); j <= (halfCircle + i + evenNumber); j++) { // 왼쪽 ~ 오른쪽 채우기
-              circleArray[i][j] = "*"; // 앞쪽
-              circleArray[reverseRow][j] = "*"; //뒷쪽
-            }
-        }
-
-        for (String[] row: circleArray) { //출력
-            for (String column : row) {
-                if (column == null) { // 아무것도 채워져 있지 않으면
-                    System.out.print(" "); // 공백 출력
-                } else { // 무언가로 채워져 있으면 ("*")
-                    System.out.print("*"); // "" 출력
-                }
-            }
-            System.out.println(""); // 개행으로 다음 행을 구분해준다.
-        }
-    }// main end
+      }
+      System.out.println(""); // 개행으로 다음 행을 구분해준다.
+    }
+  }// main end
 }
 ````
 #### 1-5) 코드 실행 결과 : 코드 동작과 입력 값, 실행 결과
@@ -99,13 +117,13 @@ public class PrintCircle {
 유효하지 않은 숫자입니다. 다시 입력해주세요.
 81
 유효하지 않은 숫자입니다. 다시 입력해주세요.
-6
-  **  
- **** 
-******
-******
- **** 
-  **  
+6  
+  --  
+ -  - 
+-    -
+-    -
+ -  - 
+  --  
 
 Process finished with exit code 0
 
@@ -120,9 +138,9 @@ ___
 - day : "일" 기준으로 split()을 하고, 0번째 index의 앞글자를 받아 문자에서 숫자로 바꿔준다.
 - 각 month의 최대 일수를 변수 monthDay에 저장하고, day가 month에 해당하는 값이 아니면 오류를 출력 후 다시 입력을 받는다.
 #### 2-2) 구현 : 2차원 배열 planet에 출력할 문자열을 담았다.
-- 이전 단계에서 사용한 makeCircleArray를 MakeCircle 클래스의 static 메서드로 꺼내주고,
-이번 단계에서 사용하기 위해서 빈 원으로 구현했던 원을 채워진 원이 되게 기능을 수정했다.
-- makeCircleArray() 메서드로 sun, earth의 2차원 배열을 만들었다.
+- 이전 단계에서 원을 만들었던 makeCircleArray를 MakeCircle 클래스의 static 메서드로 꺼내주고,
+  이번 단계에서 사용하기 위해서 빈 원으로 구현했던 원을 채워진 원도 선택할 수 있게 기능을 추가했다.
+- makeFilledCircleArray() 메서드로 sun, earth의 2차원 배열을 만들었다.
   (moon은 한 글자라서 바로 "\*"을 넣어줬다.)
 - 처음에 sun을 기준으로 earth와 moon을 위치시키게 하려고 했지만, 
 감이 안잡혀서 earth를 중심으로 sun과 moon을 배치시켰더니 구현이 한층 수월해졌다.
@@ -139,7 +157,7 @@ ___
   - 1월은 맨 왼쪽, 7월은 맨 오른쪽에 오게 설정했다.
   - 2월과 11월, 3월과 10월, 4월과 9월(중앙), 5월과 8월, 6월과 7월은 동일한 위치에 오기 때문에, 두가지 씩 묶어서 같은 숫자가 되게 코드를 작성했다.
   - 특히 4월과 9월은 중앙에 위치해야하기 때문에 지구의 정중앙에서 지구를 완전히 가리도록 코드를 작성했다.
-- 동작 예시보다 더 멋지게 구현하고 싶었지만,, 더 나은 생각이 떠오르지 않았다.
+- 콘솔 창에 좀 더 멋지게 출력하기 위해서 랜덤으로 작은 별을 찍는 기능을 추가해주었다. - static randomStars()
 #### 2-3) 출력 : 이전 단계와 동일하게 출력했다.
 - planet 전체를 출력했다.
 - null(빈값)이면 "-"을 출력하고, 값이 들어있으면 "\*"을 출력했다.
@@ -188,6 +206,20 @@ public class PlanetLocation {
       return 0; // month를 찾지 못했을 경우.
     } // findIndex - end 
   
+    // 랜덤으로 작은 별찍기
+    static void randomStars(String[][] planet, int starNumber, String star){
+      int starCount = starNumber;
+      while (starCount > 0) {
+        int randomRow = (int)(Math.random()*5);
+        int randomColumn = (int)(Math.random()*25*5);
+  
+        if (planet[randomRow][randomColumn] == null) {
+          planet[randomRow][randomColumn] = star;
+          starCount--;
+        }
+      } // while - end
+    } // randomStars - end
+  
     public static void main(String[] args) { // ✅위치가 중요!! 객체+배열 사용, 전역변수 사용x
         System.out.println("Sun, Earth, Moon");
         System.out.println("날짜를 입력하세요.");
@@ -207,8 +239,8 @@ public class PlanetLocation {
             day = Integer.parseInt(scanner.next().split("일")[0]);
         }
 
-        String[][] sun = MakeCircle.makeCircleArray(5); // MakeCircle 클래스에서 static 메서드 사용.
-        String[][] earth = MakeCircle.makeCircleArray(3);
+        String[][] sun = MakeCircle.makeFilledCircleArray(5); // MakeCircle 클래스에서 static 메서드 사용.
+        String[][] earth = MakeCircle.makeFilledCircleArray(3);
         String moon = "*";
 
         String[][] planet = new String[5][25*5]; // 초기에 정한 넓이의 *5를 해줬다.
@@ -230,13 +262,17 @@ public class PlanetLocation {
         // 태양 넣기 (위치의 경우의 수는 12가지 -> 12달에 따라 서서히 위치가 변화하게 하고 싶었음.)
         fillSun(planet, sun, month); // column 위치 파악
 
-
+        // 멋지게 구현하기 (작은 별을 원하는 숫자 만큼 랜덤으로 찍기)
+        randomStars(planet, 15, ".");
+        randomStars(planet, 7, "+");
+        
+        
         for(String[] row : planet) {
             for (String column : row) {
                 if (column == null) {
-                    System.out.print("-");
+                    System.out.print(" ");
                 } else {
-                    System.out.print("*");
+                    System.out.print(column);
                 }
             }
             System.out.println("");
@@ -252,13 +288,14 @@ public class PlanetLocation {
 Sun, Earth, Moon
 날짜를 입력하세요.
 1월 1일
---*--------------------------------------------------------------------------------------------------------------------------
--***----------------------------------------------------------*--------------------------------------------------------------
-*****--------------------------------------------------------***---*---------------------------------------------------------
--***----------------------------------------------------------*--------------------------------------------------------------
---*--------------------------------------------------------------------------------------------------------------------------
+  *    .                                      +                     .                                                        
+ *** .                    +                                   *    .                   .    .         +           .          
+*****                                   .       .            ***   *              .                   +                      
+ ***                                      .   +              .*                               .                              
+  *                                            +                            .        .       +                               
 
 Process finished with exit code 0
+
 
 ````
 - **입력2** : 7월 20일 <br>
@@ -267,13 +304,14 @@ Process finished with exit code 0
 Sun, Earth, Moon
 날짜를 입력하세요.
 7월 20일
---------------------------------------------------------------------------------------------------------------------------*--
---------------------------------------------------------------*----------------------------------------------------------***-
----------------------------------------------------------*---***--------------------------------------------------------*****
---------------------------------------------------------------*----------------------------------------------------------***-
---------------------------------------------------------------------------------------------------------------------------*--
+                                              .                                                      +                    *  
+              .  .                                            *   .         .          +              .                  *** 
+ .                   .                                   *   ***   .      +        .                        .           *****
+                                              +               *                  +    .     .       .                    *** 
+                       +                                                 +                          .                     *  
 
 Process finished with exit code 0
+
 ````
 - **입력3** : 4월 9일 <br>
   **Console**
@@ -281,11 +319,11 @@ Process finished with exit code 0
 Sun, Earth, Moon
 날짜를 입력하세요.
 4월 9일
---------------------------------------------------------------*--------------------------------------------------------------
--------------------------------------------------------------***-------------------------------------------------------------
-------------------------------------------------------------*****------------------------------------------------------------
--------------------------------------------------------------***-------------------------------------------------------------
---------------------------------------------------------------*--------------------------------------------------------------
+                                                              *                                                              
+           ..  .           +                                 *** +                                                .          
+      .                    +                                *****.                  +                                    + . 
+               .                   .           .  .          ***                                     +                      .
+                                                              *               +                       .            .      .  
 
 Process finished with exit code 0
 ````
@@ -295,15 +333,13 @@ Process finished with exit code 0
 Sun, Earth, Moon
 날짜를 입력하세요.
 11월 14일
-------------------------------------------*----------------------------------------------------------------------------------
------------------------------------------***------------------*--------------------------------------------------------------
-----------------------------------------*****----------------***-------------------------------------------------------------
------------------------------------------***------------------*--------------------------------------------------------------
-------------------------------------------*----------------------------------------------------------------------------------
+   .                                      *                           .          .                 ..           .            
+          .                              ***                  *                           .                                  
+    +                                   *****      .         ***  +        +  .                                              
+    +                             +      ***                  *            .                                                 
+ +     .                                  *     .                     +                     .                         .      
 
 Process finished with exit code 0
-
-
 ````
 
 ### 3단계 : 콘솔 태양계 출력 프로그램 완성
