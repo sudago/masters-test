@@ -40,14 +40,14 @@ public class PlanetLocation {
     } // findIndex - end
 
     // 랜덤으로 작은 별찍기
-    static void randomStars(String[][] planet, int starNumber, String star){
+    public static void randomStars(String[][] space, int starNumber, String star){
         int starCount = starNumber;
         while (starCount > 0) {
-            int randomRow = (int)(Math.random()*5);
-            int randomColumn = (int)(Math.random()*25*5);
+            int randomRow = (int)(Math.random()* space.length);
+            int randomColumn = (int)(Math.random()*space[0].length);
 
-            if (planet[randomRow][randomColumn] == null) {
-                planet[randomRow][randomColumn] = star;
+            if ((space[randomRow][randomColumn] == null) || (space[randomRow][randomColumn] == " ")) {
+                space[randomRow][randomColumn] = star;
                 starCount--;
             }
         } // while - end
@@ -76,39 +76,29 @@ public class PlanetLocation {
         String[][] earth = MakeCircle.makeFilledCircleArray(3);
         String moon = "*";
 
-        String[][] planet = new String[5][25*5]; // 초기에 정한 넓이의 *5를 해줬다.
+        String[][] space = new String[5][25*5]; // 초기에 정한 넓이의 *5를 해줬다.
         // 지구 넣기 (가운데, 위치 고정)
         for(int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                planet[1+i][12*5+1+j] = earth[i][j]; // planet의 가운데에 위치하게 함.
+                space[1+i][12*5+1+j] = earth[i][j]; // space의 가운데에 위치하게 함.
             }
         }
 
         // 달 넣기 (위치의 경우의 수는 4가지, 지구와의 거리는 3, 지구 기준으로 위치 정하기)
         if (day/8 == 0) { // 달이 지구의 오른쪽에 존재할 때
-            planet[2][(12*5)+7] = moon;
+            space[2][(12*5)+7] = moon;
         } else if (day/8 == 2) { // 달이 지구의 왼쪽에 존재할 때
-            planet[2][(12*5)-3] = moon;
+            space[2][(12*5)-3] = moon;
         }
         // day/8이 1, 3일 경우에는 지구와 겹침.
 
         // 태양 넣기 (위치의 경우의 수는 12가지 -> 12달에 따라 서서히 위치가 변화하게 하고 싶었음.)
-        fillSun(planet, sun, month); // column 위치 파악
+        fillSun(space, sun, month); // column 위치 파악
 
         // 멋지게 구현하기 (작은 별을 원하는 숫자 만큼 랜덤으로 찍기)
-        randomStars(planet, 15, ".");
-        randomStars(planet, 7, "+");
+        randomStars(space, 15, ".");
+        randomStars(space, 7, "+");
 
-
-        for(String[] row : planet) {
-            for (String column : row) {
-                if (column == null) {
-                    System.out.print(" ");
-                } else {
-                    System.out.print(column);
-                }
-            }
-            System.out.println("");
-        }
+        MakeCircle.printSpace(space); // 출력 하기
     } //main - end
 }
