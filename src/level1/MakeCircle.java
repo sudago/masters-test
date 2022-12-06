@@ -35,9 +35,24 @@ public class MakeCircle {
         }
         return circleArray;
     }
+    public static void printSpace(String[][] array){ // 프린트 기능 추가
+        for (String[] row : array) {
+            for (String column : row) {
+                checkAndPrint(column);
+            }
+            System.out.println("");
+        }
+    }
 
+    public static void checkAndPrint(String string){
+        if (string == null) {
+            System.out.print(" ");
+        } else {
+            System.out.print(string);
+        }
+    }
 
-    public static void main(String[] args) { // 4번 수정함.
+    public static void main(String[] args) { // main - start
         System.out.println("1부터 80 사이의 정수를 입력해주세요.");
         System.out.println("원의 크기는?");
 
@@ -51,15 +66,6 @@ public class MakeCircle {
 
         String[][] circleArray = makeEmptyCircleArray(circle); // MakeCircle 클래스의 static 메서드 사용.
 
-        for (String[] row: circleArray) { //출력
-            for (String column : row) {
-                if (column == null) {
-                    System.out.print(" ");
-                } else {
-                    System.out.print(column);
-                }
-            }
-            System.out.println("");
-        }
+        printSpace(circleArray); // 출력
     }// main end
 }
