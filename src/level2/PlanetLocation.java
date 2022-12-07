@@ -4,14 +4,7 @@ import level1.MakeCircle;
 
 import java.util.Scanner;
 public class PlanetLocation {
-    /*
-    1. 프로그램을 실행하면 1월 1일부터 12월 31일까지 날짜를 입력받는다.
-    2. 해당 날짜에 태양 지구 달의 상대적인 위치를 콘솔에 "멋지게" 출력한다.
-    3. 단 1월 1일에 태양 - 지구 - 달은 순서대로 일직선상에 위치한다고 가정한다.
-    4. 문제의 단순화를 위해 태양 지구 달은 같은 평면상에서 공전하며, 공전궤도는 완전한 원이라고 가정한다.
-     */
-
-    public static void fillSun(String[][] planet, String[][] sun, int month){
+    public static void fillSun(String[][] space, String[][] sun, int month){
         /*
         1월 (1월과의 거리 == 0), 2월과 12월 (1월과의 거리 == 1), 3월과 11월 (1월과의 거리 == 2), 4월과 10월 (1월과의 거리 == 3),
         5월과 9월 (1월과의 거리 == 4), 6월과 8월 (1월과의 거리 == 5), 7월 (1월과의 거리 == 6)
@@ -25,7 +18,7 @@ public class PlanetLocation {
         int monthlyLocation = 20 * calculateDistanceOfJan;
         for(int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                planet[i][j+monthlyLocation] = sun[i][j];
+                space[i][j+monthlyLocation] = sun[i][j];
             }
         }
     } // fillSun - end
@@ -64,12 +57,17 @@ public class PlanetLocation {
         int month = Integer.parseInt(scanner.next().split("월")[0]); //"월" 기준으로 앞글자 받아 문자->숫자로 바꾸기
         int day = Integer.parseInt(scanner.next().split("일")[0]); //"일" 기준으로 앞글자 받아 문자->숫자로 바꾸기
 
-        while (!(monthDay[month-1] >= day && day > 0)) { // 에러
-            System.out.println("유효하지 않은 날짜를 입력받았습니다. 다시 입력해주세요.");
-
-            // 동일한 코드를 복사해서 붙여넣은 부분이 아쉽다.
+        while (true) {
+            // 올바른 값이 들어오면
+            if ((month > 0 && month < 13) && (day > 0 && day <= monthDay[month - 1])) {
+                break; //while문 탈출하고 그 아래의 코드를 실행.
+            }
+            // 에러 메세지 출력
+            System.out.println("유효하지 않은 날짜를 입력하셨습니다. 다시 입력해주세요.");
+            // if 문에서 탈출하지 못했다면 올바른 입력을 받을 때 까지 입력을 다시 받는다.
             month = Integer.parseInt(scanner.next().split("월")[0]);
             day = Integer.parseInt(scanner.next().split("일")[0]);
+
         }
 
         String[][] sun = MakeCircle.makeFilledCircleArray(5); // MakeCircle 클래스에서 static 메서드 사용.
