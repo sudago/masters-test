@@ -5,16 +5,8 @@ import level2.PlanetLocation;
 
 import java.util.Scanner;
 
-public class PrintSolarSystem {
-        /*
-        1. 1/4 지점만 구현한다.
-        2. 태양과 지구를 먼저 구현한다.
-            - 지구의 위치는 글자로 표시해서 출력한다. => 지구를 기준으로 위치를 설정하게 한다. (글자도 점점 사라지게)
-            - 일단 지구의 공전 주기만 생각한다. (month 만 고려)
-            - 지구만 시간에 따라 움직이게 구현한다.
-        3. 은하수는 오른쪽 위 ~ 왼쪽 아래로 내려가는 느낌으로 작은 별들을 찍는다.
-           - 추가적인 별들은 PlanetLocation으로 만들었던 작은 별들을 랜덤으로 찍는 메서드를 가져와서 사용한다.
-         */
+public class SolarSystem {
+
 
     // string -> array로 만들기.
     static String[][] splitArray(String[][] array){
@@ -68,22 +60,20 @@ public class PrintSolarSystem {
 
         sun = splitArray(sun); // split으로 요소를 하나씩 분리해준다.
         earth = splitArray(earth);
-//        printSpace(sun); // 임시로 2차원 배열 출력해 봄.
-//        printSpace(earth);
 
         // 태양을 우주의 오른쪽 밑 끝에 위치하기.
         for (int i = 0; i < sun.length; i++) {
             for (int j = 0; j < sun[i].length; j++){
-                // 오른쪽 밑 6x6 부분부터 sun을 채워넣고 싶음.
+                // 오른쪽 밑 6x6 부분부터 sun을 채워넣음.
                 int row = space.length - (sun.length) * 2;
                 int column = space[0].length - (sun[i].length) * 2;
                 space[row+i][column+j] = sun[i][j];
             }
         }
 
-        // 은하 생성하기.
+        // 은하수 생성하기.
         String[][] milkyWay = new String[17][17];
-        // 중간중간 별이 뭉치지 않게 하기 위해 공백" "도 넣어줌.
+        // 중간중간 별이 뭉치지 않게 하기 위해 중간중간 공백" "도 넣어줌.
         PlanetLocation.randomStars(milkyWay, 4, " ");
         PlanetLocation.randomStars(milkyWay, 30, ".");
         PlanetLocation.randomStars(milkyWay, 3, " ");
@@ -101,9 +91,9 @@ public class PrintSolarSystem {
             }
         }
 
-        // 지구 위치 구하기. (첫 위치는 4x17)
-        // 태양 주위를 서 -> 남 -> 동 -> 북 순서로 돈다.
-        // 12가지 경우의 수로 위치를 정한다. (12달이니까)
+        // month에 따른 지구 위치 구하기. (첫 위치 (==1월)는 4x17로 지정.)
+        // 지구는 태양 기준으로 서쪽 (1월) -> 동쪽 (7월) -> 서쪽 (12월) 으로 움직인다.
+        // 7가지 경우의 수로 위치를 정한다.
 
         // 우주에서 지구의 첫 위치 구하기. PlanetLocation 클래스의 fillSun 메서드 재구성.
         int[] distanceOfMonth = {8,9,10,11,12,1,2,3,4,5,6,7};
